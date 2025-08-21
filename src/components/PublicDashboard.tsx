@@ -96,26 +96,26 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
     <Layout>
       {/* Festival Info Banner */}
       {festivalSettings && (
-        <div className="bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl p-6 mb-8">
+        <div className="bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl p-4 sm:p-6 lg:p-8 mobile-section-spacing">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-black mb-2">{festivalSettings.festival_name}</h2>
-              <p className="text-gray-600 mb-2">{festivalSettings.description}</p>
-              <p className="text-sm text-gray-500">
+              <h2 className="mobile-heading text-black mb-3 sm:mb-4">{festivalSettings.festival_name}</h2>
+              <p className="mobile-text text-gray-600 mb-3 sm:mb-4 leading-relaxed">{festivalSettings.description}</p>
+              <p className="text-sm sm:text-base text-gray-500">
                 {festivalSettings.location} • {festivalSettings.festival_year}
               </p>
             </div>
-            <div className="mt-4 md:mt-0 flex items-center space-x-4">
+            <div className="mt-6 md:mt-0 flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
               <div className="text-right">
-                <div className="flex items-center text-sm text-gray-500 mb-1">
-                  <RefreshCw className="w-3 h-3 mr-1" />
+                <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
+                  <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                   Last updated: {lastUpdated.toLocaleTimeString()}
                 </div>
                 <button
                   onClick={onAdminClick}
-                  className="flex items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                  className="btn-primary"
                 >
-                  <Lock className="w-4 h-4" />
+                  <Lock className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Admin Access</span>
                 </button>
               </div>
@@ -131,42 +131,42 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
       />
 
       {/* Live Data Indicator */}
-      <div className="flex items-center justify-center mb-8">
-        <div className="flex items-center space-x-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full">
+      <div className="flex items-center justify-center mobile-section-spacing">
+        <div className="flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 py-2 sm:py-3 bg-green-50 border border-green-200 rounded-full">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-sm font-medium text-green-700">Live Dashboard - Updates Automatically</span>
+          <span className="text-xs sm:text-sm font-medium text-green-700">Live Dashboard - Updates Automatically</span>
         </div>
       </div>
 
       {/* Donations and Expenses */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div className="mobile-grid-2 mobile-section-spacing">
         <DonationsList donations={donations} />
         <ExpensesList expenses={expenses} />
       </div>
 
       {/* Transparency Statement */}
-      <div className="bg-gray-50 border border-gray-100 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-black mb-3">Financial Transparency</h3>
-        <p className="text-gray-600 mb-4">
+      <div className="card">
+        <h3 className="text-lg sm:text-xl font-semibold text-black mb-4 sm:mb-6">Financial Transparency</h3>
+        <p className="mobile-text text-gray-600 mb-6 sm:mb-8 leading-relaxed">
           Our festival operates with complete financial transparency. All donations received and expenses incurred 
           are publicly displayed in real-time. This ensures accountability and builds trust within our community.
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
           <div>
-            <p className="text-2xl font-bold text-green-600">{donations.length}</p>
-            <p className="text-sm text-gray-500">Total Donations</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{donations.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Total Donations</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-red-600">{expenses.length}</p>
-            <p className="text-sm text-gray-500">Total Expenses</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">{expenses.length}</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Total Expenses</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-600">100%</p>
-            <p className="text-sm text-gray-500">Transparency</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600">100%</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Transparency</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-purple-600">Live</p>
-            <p className="text-sm text-gray-500">Real-time Updates</p>
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600">Live</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Real-time Updates</p>
           </div>
         </div>
       </div>

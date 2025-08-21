@@ -1,140 +1,128 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+import React from 'react';
+import { TrendingUp, TrendingDown, Wallet, Users, Target, Calendar } from 'lucide-react';
 
-@layer base {
-  html {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-  
-  body {
-    font-feature-settings: 'cv11', 'ss01';
-    font-variation-settings: 'opsz' 32;
-    line-height: 1.6;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
-    font-weight: 600;
-  }
-
-  p {
-    line-height: 1.6;
-  }
+interface FinancialSummaryProps {
+  totalDonations: number;
+  totalExpenses: number;
+  remainingBalance: number;
+  donationCount: number;
+  expenseCount: number;
+  fundraisingGoal?: number;
 }
 
-@layer components {
-  .btn-primary {
-    @apply px-4 py-2.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium min-h-[44px] flex items-center justify-center;
+export default function FinancialSummary({ 
+  totalDonations, 
+  totalExpenses, 
+  remainingBalance, 
+  donationCount,
+  expenseCount,
+  fundraisingGoal = 0
+}: FinancialSummaryProps) {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR'
+    }).format(amount);
+  };
+
+  const goalProgress = fundraisingGoal > 0 ? (totalDonations / fundraisingGoal) * 100 : 0;
+  const isBalancePositive = remainingBalance >= 0;
+
+  return (
+    <div className="mobile-grid-4 mb-6 sm:mb-8">
+      {/* Total Donations */}
+      <div className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-xl flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+          </div>
+          <span className="text-xs sm:text-sm text-gray-500">{donationCount} donations</span>
+        </div>
+        <h3 className="text-2xl font-bold text-black mb-1">{formatCurrency(totalDonations)}</h3>
+        <p className="text-sm text-gray-600">Total Donations Received</p>
+        
+        {/* Goal Progress */}
+        {fundraisingGoal > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+              <span>Goal Progress</span>
+              <span>{Math.round(goalProgress)}%</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-2">
+              <div 
+                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${Math.min(goalProgress, 100)}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Goal: {formatCurrency(fundraisingGoal)}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Total Expenses */}
+      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+            <TrendingDown className="w-6 h-6 text-red-600" />
+          </div>
+          <span className="text-sm text-gray-500">{expenseCount} expenses</span>
+        </div>
+        <h3 className="text-2xl font-bold text-black mb-1">{formatCurrency(totalExpenses)}</h3>
+        <p className="text-sm text-gray-600">Total Expenses</p>
+    @apply px-3 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium min-h-[40px] flex items-center justify-center;
+
+      {/* Remaining Balance */}
+      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
+    @apply bg-white border border-gray-100 rounded-xl p-4 sm:p-6 lg:p-8 hover:shadow-lg transition-shadow duration-200;
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            isBalancePositive ? 'bg-blue-50' : 'bg-orange-50'
+          }`}>
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent min-h-[48px] text-sm sm:text-base;
+          </div>
+          <span className={`text-sm px-2 py-1 rounded-full text-xs ${
+            isBalancePositive 
+              ? 'bg-green-50 text-green-700' 
+    @apply grid grid-cols-1 gap-6 sm:gap-8;
+          }`}>
+            {isBalancePositive ? 'Surplus' : 'Deficit'}
+          </span>
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8;
+        <h3 className={`text-2xl font-bold mb-1 ${
+          isBalancePositive ? 'text-black' : 'text-orange-600'
+        }`}>
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8;
+        </h3>
+        <p className="text-sm text-gray-600">Remaining Balance</p>
+      </div>
+    @apply px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10;
+      {/* Community Impact */}
+      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="flex items-center justify-between mb-4">
+    @apply text-sm sm:text-base leading-relaxed;
+            <Users className="w-6 h-6 text-purple-600" />
+          </div>
+          <span className="text-sm text-gray-500">Community</span>
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight;
+        <h3 className="text-2xl font-bold text-black mb-1">{donationCount}</h3>
+        <p className="text-sm text-gray-600">Community Contributors</p>
+        <div className="mt-4 flex items-center text-xs text-gray-500">
+    @apply text-lg sm:text-xl lg:text-2xl font-medium leading-snug;
+          Building stronger community bonds
+        </div>
+      </div>
+    @apply min-h-[48px] min-w-[48px] flex items-center justify-center;
   }
 
-  .btn-secondary {
-    @apply px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium min-h-[44px] flex items-center justify-center;
+  /* Enhanced mobile spacing */
+  .mobile-card-spacing {
+    @apply space-y-4 sm:space-y-6;
   }
 
-  .btn-edit {
-    @apply px-3 py-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors duration-200 text-sm font-medium min-h-[36px] flex items-center justify-center;
+  .mobile-section-spacing {
+    @apply mb-8 sm:mb-12 lg:mb-16;
   }
 
-  .btn-delete {
-    @apply px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-sm font-medium min-h-[36px] flex items-center justify-center;
-  }
-
-  .card {
-    @apply bg-white border border-gray-100 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-shadow duration-200;
-  }
-
-  .input-primary {
-    @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent min-h-[44px];
-  }
-
-  /* Mobile-first responsive utilities */
-  .mobile-grid {
-    @apply grid grid-cols-1 gap-4 sm:gap-6;
-  }
-
-  .mobile-grid-2 {
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6;
-  }
-
-  .mobile-grid-4 {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6;
-  }
-
-  .mobile-padding {
-    @apply px-4 py-6 sm:px-6 sm:py-8;
-  }
-
-  .mobile-text {
-    @apply text-sm sm:text-base;
-  }
-
-  .mobile-heading {
-    @apply text-lg sm:text-xl lg:text-2xl;
-  }
-
-  .mobile-subheading {
-    @apply text-base sm:text-lg;
-  }
-
-  .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Animation for real-time updates */
-@keyframes pulse-green {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.animate-pulse-green {
-  animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Focus states for accessibility */
-.focus-visible:focus {
-  outline: 2px solid #000;
-  outline-offset: 2px;
-}
-
-/* Print styles */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  .print-break {
-    page-break-before: always;
-  }
-}
-
-/* Dark mode support (future enhancement) */
-@media (prefers-color-scheme: dark) {
-  /* Dark mode styles would go here */
+  .mobile-content-spacing {
+    @apply space-y-6 sm:space-y-8 lg:space-y-10;
+  );
 }

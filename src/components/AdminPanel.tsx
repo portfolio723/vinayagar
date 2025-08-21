@@ -27,6 +27,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   });
   const [showDonationForm, setShowDonationForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -64,14 +66,47 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   const handleDonationAdded = () => {
     setShowDonationForm(false);
+    setEditingDonation(null);
     loadData();
   };
 
   const handleExpenseAdded = () => {
     setShowExpenseForm(false);
+    setEditingExpense(null);
     loadData();
   };
 
+  const handleEditDonation = (donation: Donation) => {
+    setEditingDonation(donation);
+    setShowDonationForm(true);
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    setShowExpenseForm(true);
+  };
+
+  const handleDeleteDonation = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this donation?')) {
+      try {
+        await festivalService.deleteDonation(id);
+        loadData();
+      } catch (error) {
+        console.error('Error deleting donation:', error);
+      }
+    }
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this expense?')) {
+      try {
+        await festivalService.deleteExpense(id);
+        loadData();
+      } catch (error) {
+        console.error('Error deleting expense:', error);
+      }
+    }
+  };
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'donations', label: 'Donations', icon: Users },
@@ -94,41 +129,41 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto mobile-padding">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-black">Festival Admin</h1>
-              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+              <h1 className="mobile-heading text-black">Festival Admin</h1>
+              <span className="px-3 py-1 bg-green-100 text-green-800 text-xs sm:text-sm font-medium rounded-full">
                 Live Dashboard
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 text-sm sm:text-base"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto mobile-padding">
         {/* Tab Navigation */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-8">
+        <div className="flex overflow-x-auto space-x-1 bg-gray-100 p-1 rounded-lg mb-8 sm:mb-12">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ActiveTab)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md font-medium transition-colors duration-200 ${
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap text-sm sm:text-base ${
                   activeTab === tab.id
                     ? 'bg-white text-black shadow-sm'
                     : 'text-gray-600 hover:text-black hover:bg-white/50'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -137,79 +172,105 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="space-y-8">
+          <div className="mobile-content-spacing">
             <FinancialSummary 
               {...financialSummary}
               fundraisingGoal={festivalSettings?.fundraising_goal || 0}
             />
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <DonationsList donations={donations.slice(0, 5)} />
-              <ExpensesList expenses={expenses.slice(0, 5)} />
+            <div className="mobile-grid-2">
+              <DonationsList 
+                donations={donations.slice(0, 5)} 
+                isAdmin={true}
+                onEdit={handleEditDonation}
+                onDelete={handleDeleteDonation}
+              />
+              <ExpensesList 
+                expenses={expenses.slice(0, 5)} 
+                isAdmin={true}
+                onEdit={handleEditExpense}
+                onDelete={handleDeleteExpense}
+              />
             </div>
           </div>
         )}
 
         {/* Donations Tab */}
         {activeTab === 'donations' && (
-          <div className="space-y-6">
+          <div className="mobile-content-spacing">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-black">Manage Donations</h2>
+              <h2 className="mobile-subheading text-black">Manage Donations</h2>
               <button
                 onClick={() => setShowDonationForm(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                className="btn-primary"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Add Donation</span>
               </button>
             </div>
-            <DonationsList donations={donations} showAllDetails />
+            <DonationsList 
+              donations={donations} 
+              showAllDetails 
+              isAdmin={true}
+              onEdit={handleEditDonation}
+              onDelete={handleDeleteDonation}
+            />
           </div>
         )}
 
         {/* Expenses Tab */}
         {activeTab === 'expenses' && (
-          <div className="space-y-6">
+          <div className="mobile-content-spacing">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-black">Manage Expenses</h2>
+              <h2 className="mobile-subheading text-black">Manage Expenses</h2>
               <button
                 onClick={() => setShowExpenseForm(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                className="btn-primary"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Add Expense</span>
               </button>
             </div>
-            <ExpensesList expenses={expenses} showAllDetails />
+            <ExpensesList 
+              expenses={expenses} 
+              showAllDetails 
+              isAdmin={true}
+              onEdit={handleEditExpense}
+              onDelete={handleDeleteExpense}
+            />
           </div>
         )}
 
         {/* Settings Tab */}
         {activeTab === 'settings' && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
-            <h2 className="text-xl font-semibold text-black mb-6">Festival Settings</h2>
+          <div className="card">
+            <h2 className="mobile-subheading text-black mb-6 sm:mb-8">Festival Settings</h2>
             {festivalSettings && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="mobile-content-spacing">
+                <div className="mobile-grid-2">
                   <div>
-                    <h3 className="font-medium text-black mb-2">Festival Information</h3>
-                    <p className="text-sm text-gray-600">Name: {festivalSettings.festival_name}</p>
-                    <p className="text-sm text-gray-600">Year: {festivalSettings.festival_year}</p>
-                    <p className="text-sm text-gray-600">Location: {festivalSettings.location}</p>
+                    <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Festival Information</h3>
+                    <div className="space-y-2">
+                      <p className="mobile-text text-gray-600"><span className="font-medium">Name:</span> {festivalSettings.festival_name}</p>
+                      <p className="mobile-text text-gray-600"><span className="font-medium">Year:</span> {festivalSettings.festival_year}</p>
+                      <p className="mobile-text text-gray-600"><span className="font-medium">Location:</span> {festivalSettings.location}</p>
+                    </div>
                   </div>
                   <div>
-                    <h3 className="font-medium text-black mb-2">Financial Goals</h3>
-                    <p className="text-sm text-gray-600">
-                      Target: ₹{festivalSettings.fundraising_goal?.toLocaleString('en-IN')}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Progress: {Math.round((financialSummary.totalDonations / (festivalSettings.fundraising_goal || 1)) * 100)}%
-                    </p>
+                    <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Financial Goals</h3>
+                    <div className="space-y-2">
+                      <p className="mobile-text text-gray-600">
+                        <span className="font-medium">Target:</span> ₹{festivalSettings.fundraising_goal?.toLocaleString('en-IN')}
+                      </p>
+                      <p className="mobile-text text-gray-600">
+                        <span className="font-medium">Progress:</span> {Math.round((financialSummary.totalDonations / (festivalSettings.fundraising_goal || 1)) * 100)}%
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-medium text-black mb-2">Description</h3>
-                  <p className="text-sm text-gray-600">{festivalSettings.description}</p>
+                  <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Description</h3>
+                  <p className="mobile-text text-gray-600 leading-relaxed">{festivalSettings.description}</p>
                 </div>
               </div>
             )}
@@ -220,15 +281,17 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Modals */}
       {showDonationForm && (
         <DonationForm 
-          onClose={() => setShowDonationForm(false)}
+          onClose={() => { setShowDonationForm(false); setEditingDonation(null); }}
           onSuccess={handleDonationAdded}
+          editingDonation={editingDonation}
         />
       )}
 
       {showExpenseForm && (
         <ExpenseForm 
-          onClose={() => setShowExpenseForm(false)}
+          onClose={() => { setShowExpenseForm(false); setEditingExpense(null); }}
           onSuccess={handleExpenseAdded}
+          editingExpense={editingExpense}
         />
       )}
     </div>
