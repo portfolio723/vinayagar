@@ -7,6 +7,9 @@ export default {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       colors: {
+        background: '#ffffff',
+        foreground: '#111827',
+        border: '#f3f4f6',
         gray: {
           50: '#f9fafb',
           100: '#f3f4f6',
