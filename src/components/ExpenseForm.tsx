@@ -69,35 +69,35 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto mx-4">
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 rounded-xl flex items-center justify-center">
-              <Receipt className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+            <div className="icon-container-md bg-red-50">
+              <Receipt className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-lg sm:text-xl font-semibold text-black">
+            <h2 className="heading-md">
               {editingExpense ? 'Edit Expense' : 'Add New Expense'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="mobile-touch-target bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            className="btn-outline p-2"
           >
-            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <form onSubmit={handleSubmit} className="modal-body element-spacing">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm sm:text-base">
+            <div className="error-container">
               {error}
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-4 sm:gap-6">
+          <div className="element-spacing">
             <div>
-              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+              <label className="label-primary">
                 Expense Title *
               </label>
               <input
@@ -111,13 +111,13 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid-responsive-2">
               <div>
-                <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                <label className="label-primary">
                   Amount *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-3 sm:top-4 text-gray-400 text-sm sm:text-base">₹</span>
+                  <span className="absolute left-3 top-4 text-gray-400">₹</span>
                   <input
                     type="number"
                     name="amount"
@@ -126,14 +126,14 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
                     step="0.01"
                     value={formData.amount}
                     onChange={handleInputChange}
-                    className="input-primary pl-8 sm:pl-10"
+                    className="input-primary pl-10"
                     placeholder="0.00"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                <label className="label-primary">
                   Expense Date
                 </label>
                 <input
@@ -147,7 +147,7 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
             </div>
 
             <div>
-              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+              <label className="label-primary">
                 Category
               </label>
               <select
@@ -165,36 +165,36 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
               </select>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid-responsive-2">
               <div>
-                <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                <label className="label-primary">
                   Vendor Name
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3 top-3 sm:top-4 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <Building className="absolute left-3 top-4 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="vendor_name"
                     value={formData.vendor_name}
                     onChange={handleInputChange}
-                    className="input-primary pl-10 sm:pl-12"
+                    className="input-primary pl-12"
                     placeholder="Vendor or supplier name"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                <label className="label-primary">
                   Receipt Number
                 </label>
                 <div className="relative">
-                  <Tag className="absolute left-3 top-3 sm:top-4 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <Tag className="absolute left-3 top-4 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="receipt_number"
                     value={formData.receipt_number}
                     onChange={handleInputChange}
-                    className="input-primary pl-10 sm:pl-12"
+                    className="input-primary pl-12"
                     placeholder="Receipt/invoice number"
                   />
                 </div>
@@ -202,7 +202,7 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
             </div>
 
             <div>
-              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+              <label className="label-primary">
                 Description (Optional)
               </label>
               <textarea
@@ -216,7 +216,8 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-100">
+        </form>
+        <div className="modal-footer">
             <button
               type="button"
               onClick={onClose}
@@ -228,6 +229,7 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
               type="submit"
               disabled={isSubmitting}
               className="btn-primary flex-1"
+              onClick={handleSubmit}
             >
               {isSubmitting 
                 ? (editingExpense ? 'Updating...' : 'Adding...') 
@@ -235,8 +237,7 @@ export default function ExpenseForm({ onClose, onSuccess, editingExpense }: Expe
               }
             </button>
           </div>
-        </form>
-      </div>
+        </div>
     </div>
   );
 }

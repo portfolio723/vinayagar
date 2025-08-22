@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, LogOut, Settings, BarChart3, Calendar, Users } from 'lucide-react';
+import { Plus, LogOut, Settings, BarChart3, Calendar, Users, Edit } from 'lucide-react';
 import { festivalService, authService, Donation, Expense, FestivalSettings } from '../lib/supabase';
 import DonationForm from './DonationForm';
 import ExpenseForm from './ExpenseForm';
+import SettingsForm from './SettingsForm';
 import DonationsList from './DonationsList';
 import ExpensesList from './ExpensesList';
 import FinancialSummary from './FinancialSummary';
@@ -27,6 +28,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   });
   const [showDonationForm, setShowDonationForm] = useState(false);
   const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [showSettingsForm, setShowSettingsForm] = useState(false);
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,6 +75,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const handleExpenseAdded = () => {
     setShowExpenseForm(false);
     setEditingExpense(null);
+    loadData();
+  };
+
+  const handleSettingsUpdated = () => {
+    setShowSettingsForm(false);
     loadData();
   };
 
@@ -129,41 +136,41 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto mobile-padding">
+        <div className="max-w-7xl mx-auto container-padding py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="mobile-heading text-black">Festival Admin</h1>
-              <span className="px-3 py-1 bg-green-100 text-green-800 text-xs sm:text-sm font-medium rounded-full">
+              <h1 className="heading-lg">Festival Admin</h1>
+              <span className="status-positive">
                 Live Dashboard
               </span>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+              className="btn-secondary"
             >
-              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden sm:inline">Logout</span>
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto mobile-padding">
+      <div className="max-w-7xl mx-auto container-padding section-spacing">
         {/* Tab Navigation */}
-        <div className="flex overflow-x-auto space-x-1 bg-gray-100 p-1 rounded-lg mb-8 sm:mb-12">
+        <div className="flex overflow-x-auto space-x-1 bg-gray-100 p-1 rounded-xl mb-8">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ActiveTab)}
-                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-md font-medium transition-colors duration-200 whitespace-nowrap text-sm sm:text-base ${
+                className={`flex items-center space-x-2 px-4 py-3 rounded-lg font-medium transition-colors duration-200 whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-white text-black shadow-sm'
-                    : 'text-gray-600 hover:text-black hover:bg-white/50'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Icon className="w-5 h-5" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -172,13 +179,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="mobile-content-spacing">
+          <div className="content-spacing">
             <FinancialSummary 
               {...financialSummary}
               fundraisingGoal={festivalSettings?.fundraising_goal || 0}
             />
             
-            <div className="mobile-grid-2">
+            <div className="grid-responsive-2">
               <DonationsList 
                 donations={donations.slice(0, 5)} 
                 isAdmin={true}
@@ -197,20 +204,20 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Donations Tab */}
         {activeTab === 'donations' && (
-          <div className="mobile-content-spacing">
+          <div className="content-spacing">
             <div className="flex items-center justify-between">
-              <h2 className="mobile-subheading text-black">Manage Donations</h2>
+              <h2 className="heading-lg">Manage Donations</h2>
               <button
                 onClick={() => setShowDonationForm(true)}
                 className="btn-primary"
               >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Plus className="w-5 h-5" />
                 <span>Add Donation</span>
               </button>
             </div>
             <DonationsList 
               donations={donations} 
-              showAllDetails 
+              showAllDetails={true}
               isAdmin={true}
               onEdit={handleEditDonation}
               onDelete={handleDeleteDonation}
@@ -220,20 +227,20 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Expenses Tab */}
         {activeTab === 'expenses' && (
-          <div className="mobile-content-spacing">
+          <div className="content-spacing">
             <div className="flex items-center justify-between">
-              <h2 className="mobile-subheading text-black">Manage Expenses</h2>
+              <h2 className="heading-lg">Manage Expenses</h2>
               <button
                 onClick={() => setShowExpenseForm(true)}
                 className="btn-primary"
               >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Plus className="w-5 h-5" />
                 <span>Add Expense</span>
               </button>
             </div>
             <ExpensesList 
               expenses={expenses} 
-              showAllDetails 
+              showAllDetails={true}
               isAdmin={true}
               onEdit={handleEditExpense}
               onDelete={handleDeleteExpense}
@@ -243,34 +250,61 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         {/* Settings Tab */}
         {activeTab === 'settings' && (
-          <div className="card">
-            <h2 className="mobile-subheading text-black mb-6 sm:mb-8">Festival Settings</h2>
+          <div className="content-spacing">
+            <div className="flex items-center justify-between">
+              <h2 className="heading-lg">Festival Settings</h2>
+              <button
+                onClick={() => setShowSettingsForm(true)}
+                className="btn-primary"
+              >
+                <Edit className="w-5 h-5" />
+                <span>Edit Settings</span>
+              </button>
+            </div>
+            
             {festivalSettings && (
-              <div className="mobile-content-spacing">
-                <div className="mobile-grid-2">
-                  <div>
-                    <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Festival Information</h3>
-                    <div className="space-y-2">
-                      <p className="mobile-text text-gray-600"><span className="font-medium">Name:</span> {festivalSettings.festival_name}</p>
-                      <p className="mobile-text text-gray-600"><span className="font-medium">Year:</span> {festivalSettings.festival_year}</p>
-                      <p className="mobile-text text-gray-600"><span className="font-medium">Location:</span> {festivalSettings.location}</p>
+              <div className="grid-responsive-2">
+                <div className="card">
+                  <h3 className="card-title mb-4">Festival Information</h3>
+                  <div className="element-spacing">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Name:</span>
+                      <span className="body-md text-gray-900">{festivalSettings.festival_name}</span>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Financial Goals</h3>
-                    <div className="space-y-2">
-                      <p className="mobile-text text-gray-600">
-                        <span className="font-medium">Target:</span> ₹{festivalSettings.fundraising_goal?.toLocaleString('en-IN')}
-                      </p>
-                      <p className="mobile-text text-gray-600">
-                        <span className="font-medium">Progress:</span> {Math.round((financialSummary.totalDonations / (festivalSettings.fundraising_goal || 1)) * 100)}%
-                      </p>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Year:</span>
+                      <span className="body-md text-gray-900">{festivalSettings.festival_year}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Location:</span>
+                      <span className="body-md text-gray-900">{festivalSettings.location || 'Not set'}</span>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-black mb-3 sm:mb-4 text-base sm:text-lg">Description</h3>
-                  <p className="mobile-text text-gray-600 leading-relaxed">{festivalSettings.description}</p>
+                
+                <div className="card">
+                  <h3 className="card-title mb-4">Financial Goals</h3>
+                  <div className="element-spacing">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Target:</span>
+                      <span className="body-md text-gray-900">₹{festivalSettings.fundraising_goal?.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Progress:</span>
+                      <span className="body-md text-gray-900">{Math.round((financialSummary.totalDonations / (festivalSettings.fundraising_goal || 1)) * 100)}%</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="body-md font-medium text-gray-700">Remaining:</span>
+                      <span className="body-md text-gray-900">₹{Math.max(0, (festivalSettings.fundraising_goal || 0) - financialSummary.totalDonations).toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="card">
+                <h3 className="card-title mb-4">Festival Description</h3>
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="body-md text-gray-700 leading-relaxed">{festivalSettings.description}</p>
                 </div>
               </div>
             )}
@@ -292,6 +326,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           onClose={() => { setShowExpenseForm(false); setEditingExpense(null); }}
           onSuccess={handleExpenseAdded}
           editingExpense={editingExpense}
+        />
+      )}
+
+      {showSettingsForm && (
+        <SettingsForm 
+          onClose={() => setShowSettingsForm(false)}
+          onSuccess={handleSettingsUpdated}
+          currentSettings={festivalSettings}
         />
       )}
     </div>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { User, Calendar, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Heart, Calendar, Edit2, Trash2, Eye, EyeOff, User, Phone, Mail, CreditCard } from 'lucide-react';
 import { Donation } from '../lib/supabase';
 
 interface DonationsListProps {
   donations: Donation[];
-  showDetails?: boolean;
+  showAllDetails?: boolean;
   onEdit?: (donation: Donation) => void;
   onDelete?: (id: string) => void;
   isAdmin?: boolean;
@@ -12,7 +12,7 @@ interface DonationsListProps {
 
 export default function DonationsList({ 
   donations, 
-  showDetails = false, 
+  showAllDetails = false, 
   onEdit, 
   onDelete,
   isAdmin = false 
@@ -22,7 +22,9 @@ export default function DonationsList({
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'INR'
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
@@ -49,148 +51,200 @@ export default function DonationsList({
     }
   };
 
-  const visibleDonations = donations.filter(donation => 
-    showAnonymous || !donation.is_anonymous
-  );
+  const getPaymentMethodIcon = (method: string) => {
+    switch (method) {
+      case 'Online':
+        return <CreditCard className="w-3 h-3" />;
+      case 'Cash':
+        return <span className="text-xs">💵</span>;
+      case 'Check':
+        return <span className="text-xs">📝</span>;
+      default:
+        return <span className="text-xs">💳</span>;
+    }
+  };
+
+  const visibleDonations = showAllDetails 
+    ? (showAnonymous ? donations : donations.filter(d => !d.is_anonymous))
+    : donations.slice(0, 5);
 
   const anonymousCount = donations.filter(d => d.is_anonymous).length;
-
-  if (donations.length === 0) {
-    return (
-      <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
-        <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No donations yet</h3>
-        <p className="text-gray-500">Donations will appear here once they are added.</p>
-      </div>
-    );
-  }
+  const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0);
+  const averageAmount = donations.length > 0 ? totalAmount / donations.length : 0;
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Anonymous donations toggle for admin */}
-      {isAdmin && anonymousCount > 0 && (
-        <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            {showAnonymous ? <Eye className="w-5 h-5 text-gray-600" /> : <EyeOff className="w-5 h-5 text-gray-600" />}
-            <span className="text-sm font-medium text-gray-700">
-              {anonymousCount} anonymous donation{anonymousCount !== 1 ? 's' : ''}
-            </span>
+    <div className="card border-l-4 border-l-green-500 animate-slide-up">
+      <div className="card-header">
+        <div className="flex items-center gap-3">
+          <div className="icon-container-md bg-green-50">
+            <Heart className="w-6 h-6 text-green-600" />
           </div>
-          <button
-            onClick={() => setShowAnonymous(!showAnonymous)}
-            className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            {showAnonymous ? 'Hide' : 'Show'}
-          </button>
+          <div>
+            <h2 className="card-title">Recent Donations</h2>
+            <p className="card-subtitle">Community contributions with gratitude</p>
+          </div>
+        </div>
+        {!showAllDetails && donations.length > 5 && (
+          <div className="status-positive">
+            Showing {visibleDonations.length} of {donations.length}
+          </div>
+        )}
+      </div>
+
+      {/* Anonymous donations toggle for admin */}
+      {isAdmin && showAllDetails && anonymousCount > 0 && (
+        <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {showAnonymous ? <Eye className="w-5 h-5 text-gray-600" /> : <EyeOff className="w-5 h-5 text-gray-600" />}
+              <span className="body-md font-medium text-gray-700">
+                {anonymousCount} anonymous donation{anonymousCount !== 1 ? 's' : ''}
+              </span>
+            </div>
+            <button
+              onClick={() => setShowAnonymous(!showAnonymous)}
+              className="btn-outline"
+            >
+              {showAnonymous ? 'Hide Anonymous' : 'Show Anonymous'}
+            </button>
+          </div>
         </div>
       )}
 
-      <div className="grid gap-4 sm:gap-6">
-        {visibleDonations.map((donation) => (
-          <div
-            key={donation.id}
-            className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 hover:shadow-lg transition-shadow duration-200"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Donor Info */}
-              <div className="flex items-start space-x-3 flex-1">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <User className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+      {donations.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="icon-container-lg bg-gray-50 mx-auto mb-6">
+            <Heart className="w-8 h-8 text-gray-300" />
+          </div>
+          <h3 className="heading-md text-gray-600 mb-4">No donations yet</h3>
+          <p className="body-md text-gray-500 max-w-md mx-auto">
+            Donations from our generous community will be displayed here with complete transparency.
+          </p>
+        </div>
+      ) : (
+        <div className="element-spacing">
+          {/* Donations List */}
+          <div className="space-y-4">
+            {visibleDonations.map((donation) => (
+              <div key={donation.id} className="list-item">
+                <div className="list-item-content">
+                  <div className="icon-container-sm bg-green-50">
+                    <User className="w-5 h-5 text-green-600" />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                      <h3 className="heading-sm truncate">
+                        {donation.is_anonymous ? 'Anonymous Donor' : donation.donor_name}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(donation.category)}`}>
+                          {donation.category}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-gray-500 mb-2">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(donation.donation_date)}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {getPaymentMethodIcon(donation.payment_method)}
+                        {donation.payment_method}
+                      </div>
+                    </div>
+                    
+                    {showAllDetails && (
+                      <div className="space-y-1">
+                        {donation.donor_phone && (
+                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                            <Phone className="w-3 h-3" />
+                            {donation.donor_phone}
+                          </div>
+                        )}
+                        {donation.donor_email && (
+                          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                            <Mail className="w-3 h-3" />
+                            {donation.donor_email}
+                          </div>
+                        )}
+                        {donation.notes && (
+                          <p className="text-xs sm:text-sm text-gray-600 italic mt-2 p-2 bg-gray-50 rounded-lg border border-gray-100">
+                            "{donation.notes}"
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
-                    {donation.is_anonymous ? 'Anonymous Donor' : donation.donor_name}
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(donation.category)}`}>
-                      {donation.category}
-                    </span>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(donation.donation_date)}
+
+                <div className="list-item-actions">
+                  <div className="text-right mr-4">
+                    <div className="heading-md text-green-600 font-bold">
+                      {formatCurrency(donation.amount)}
                     </div>
                   </div>
-                  {showDetails && donation.donor_phone && (
-                    <p className="text-sm text-gray-600 mt-1">📞 {donation.donor_phone}</p>
-                  )}
-                  {showDetails && donation.donor_email && (
-                    <p className="text-sm text-gray-600">✉️ {donation.donor_email}</p>
-                  )}
-                  {showDetails && donation.notes && (
-                    <p className="text-sm text-gray-600 mt-2 italic">"{donation.notes}"</p>
+
+                  {/* Admin Actions */}
+                  {isAdmin && onEdit && onDelete && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onEdit(donation)}
+                        className="btn-edit"
+                        title="Edit donation"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Are you sure you want to delete this donation?')) {
+                            onDelete(donation.id);
+                          }
+                        }}
+                        className="btn-delete"
+                        title="Delete donation"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Amount and Actions */}
-              <div className="flex items-center justify-between sm:justify-end gap-4">
-                <div className="text-right">
-                  <div className="text-xl sm:text-2xl font-bold text-green-600">
-                    {formatCurrency(donation.amount)}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    via {donation.payment_method}
-                  </div>
+          {/* Summary Statistics */}
+          <div className="card-compact bg-green-50 border-green-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div>
+                <div className="heading-md text-green-600 mb-1">
+                  {donations.length}
                 </div>
-
-                {/* Admin Actions */}
-                {isAdmin && onEdit && onDelete && (
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => onEdit(donation)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit donation"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (window.confirm('Are you sure you want to delete this donation?')) {
-                          onDelete(donation.id);
-                        }
-                      }}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete donation"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
+                <div className="body-sm text-green-700">Total Donations</div>
+              </div>
+              <div>
+                <div className="heading-md text-green-600 mb-1">
+                  {formatCurrency(totalAmount)}
+                </div>
+                <div className="body-sm text-green-700">Total Amount</div>
+              </div>
+              <div>
+                <div className="heading-md text-green-600 mb-1">
+                  {formatCurrency(averageAmount)}
+                </div>
+                <div className="body-sm text-green-700">Average</div>
+              </div>
+              <div>
+                <div className="heading-md text-green-600 mb-1">
+                  {anonymousCount}
+                </div>
+                <div className="body-sm text-green-700">Anonymous</div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Summary */}
-      <div className="bg-gray-50 rounded-xl p-4 sm:p-6">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-lg sm:text-xl font-bold text-gray-900">
-              {donations.length}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Total Donations</div>
-          </div>
-          <div>
-            <div className="text-lg sm:text-xl font-bold text-green-600">
-              {formatCurrency(donations.reduce((sum, d) => sum + d.amount, 0))}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Total Amount</div>
-          </div>
-          <div>
-            <div className="text-lg sm:text-xl font-bold text-blue-600">
-              {formatCurrency(donations.reduce((sum, d) => sum + d.amount, 0) / donations.length)}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Average</div>
-          </div>
-          <div>
-            <div className="text-lg sm:text-xl font-bold text-purple-600">
-              {anonymousCount}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600">Anonymous</div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

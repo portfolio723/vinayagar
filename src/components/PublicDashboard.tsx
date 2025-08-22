@@ -96,13 +96,103 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
     <Layout>
       {/* Festival Info Banner */}
       {festivalSettings && (
-        <div className="bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl p-4 sm:p-6 lg:p-8 mobile-section-spacing">
+        <div className="card bg-gradient-to-r from-gray-50 to-white border-l-4 border-l-gray-900 animate-fade-in">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <div>
-              <h2 className="mobile-heading text-black mb-3 sm:mb-4">{festivalSettings.festival_name}</h2>
-              <p className="mobile-text text-gray-600 mb-3 sm:mb-4 leading-relaxed">{festivalSettings.description}</p>
-              <p className="text-sm sm:text-base text-gray-500">
-                {festivalSettings.location} • {festivalSettings.festival_year}
+              <h2 className="heading-lg mb-4">{festivalSettings.festival_name} {festivalSettings.festival_year}</h2>
+              <p className="body-lg text-gray-600 mb-4 leading-relaxed">{festivalSettings.description}</p>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                {festivalSettings.location && (
+                  <span className="flex items-center gap-1">
+                    📍 {festivalSettings.location}
+                  </span>
+                )}
+                <span className="flex items-center gap-1">
+                  📅 {festivalSettings.festival_year}
+                </span>
+              </div>
+            </div>
+            <div className="mt-6 md:mt-0 flex flex-col items-start md:items-end space-y-4">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <RefreshCw className="w-4 h-4" />
+                Last updated: {lastUpdated.toLocaleTimeString()}
+              </div>
+              <button
+                onClick={onAdminClick}
+                className="btn-primary"
+              >
+                <Lock className="w-5 h-5" />
+                <span>Admin Access</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Live Data Indicator */}
+      <div className="flex items-center justify-center">
+        <div className="flex items-center gap-3 px-6 py-3 bg-green-50 border border-green-200 rounded-full animate-pulse">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="body-sm font-medium text-green-700">Live Dashboard - Updates Automatically</span>
+        </div>
+      </div>
+
+      {/* Financial Summary */}
+      <FinancialSummary 
+        {...financialSummary}
+        fundraisingGoal={festivalSettings?.fundraising_goal || 0}
+      />
+
+      {/* Donations and Expenses */}
+      <div className="grid-responsive-2">
+        <DonationsList donations={donations} />
+        <ExpensesList expenses={expenses} />
+      </div>
+
+      {/* Transparency Statement */}
+      <div className="card border-l-4 border-l-blue-500">
+        <div className="text-center">
+          <h3 className="heading-md mb-6">Complete Financial Transparency</h3>
+          <p className="body-lg text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Our festival operates with complete financial transparency. All donations received and expenses incurred 
+            are publicly displayed in real-time. This ensures accountability and builds trust within our community.
+          </p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="icon-container-md bg-green-50 mx-auto mb-3">
+                <span className="text-2xl">💰</span>
+              </div>
+              <p className="heading-lg text-green-600 mb-2">{donations.length}</p>
+              <p className="body-sm text-gray-600">Total Donations</p>
+            </div>
+            <div className="text-center">
+              <div className="icon-container-md bg-red-50 mx-auto mb-3">
+                <span className="text-2xl">📊</span>
+              </div>
+              <p className="heading-lg text-red-600 mb-2">{expenses.length}</p>
+              <p className="body-sm text-gray-600">Total Expenses</p>
+            </div>
+            <div className="text-center">
+              <div className="icon-container-md bg-blue-50 mx-auto mb-3">
+                <span className="text-2xl">✅</span>
+              </div>
+              <p className="heading-lg text-blue-600 mb-2">100%</p>
+              <p className="body-sm text-gray-600">Transparency</p>
+            </div>
+            <div className="text-center">
+              <div className="icon-container-md bg-purple-50 mx-auto mb-3">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <p className="heading-lg text-purple-600 mb-2">Live</p>
+              <p className="body-sm text-gray-600">Real-time Updates</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+}
               </p>
             </div>
             <div className="mt-6 md:mt-0 flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
