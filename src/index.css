@@ -1,116 +1,85 @@
-import React from 'react';
-import { TrendingUp, TrendingDown, Wallet, Users, Target, Calendar } from 'lucide-react';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-interface FinancialSummaryProps {
-  totalDonations: number;
-  totalExpenses: number;
-  remainingBalance: number;
-  donationCount: number;
-  expenseCount: number;
-  fundraisingGoal?: number;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 }
 
-export default function FinancialSummary({ 
-  totalDonations, 
-  totalExpenses, 
-  remainingBalance, 
-  donationCount,
-  expenseCount,
-  fundraisingGoal = 0
-}: FinancialSummaryProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount);
-  };
+@layer components {
+  /* Enhanced mobile-first responsive utilities */
+  .mobile-grid-1 {
+    @apply grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8;
+  }
 
-  const goalProgress = fundraisingGoal > 0 ? (totalDonations / fundraisingGoal) * 100 : 0;
-  const isBalancePositive = remainingBalance >= 0;
+  .mobile-grid-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8;
+  }
 
-  return (
-    <div className="mobile-grid-4 mb-6 sm:mb-8">
-      {/* Total Donations */}
-      <div className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-shadow duration-200">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-xl flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-          </div>
-          <span className="text-xs sm:text-sm text-gray-500">{donationCount} donations</span>
-        </div>
-        <h3 className="text-2xl font-bold text-black mb-1">{formatCurrency(totalDonations)}</h3>
-        <p className="text-sm text-gray-600">Total Donations Received</p>
-        
-        {/* Goal Progress */}
-        {fundraisingGoal > 0 && (
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-              <span>Goal Progress</span>
-              <span>{Math.round(goalProgress)}%</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-2">
-              <div 
-                className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min(goalProgress, 100)}%` }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Goal: {formatCurrency(fundraisingGoal)}</p>
-          </div>
-        )}
-      </div>
+  .mobile-grid-3 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8;
+  }
 
-      {/* Total Expenses */}
-      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-            <TrendingDown className="w-6 h-6 text-red-600" />
-          </div>
-          <span className="text-sm text-gray-500">{expenseCount} expenses</span>
-        </div>
-        <h3 className="text-2xl font-bold text-black mb-1">{formatCurrency(totalExpenses)}</h3>
-        <p className="text-sm text-gray-600">Total Expenses</p>
-    @apply px-3 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium min-h-[40px] flex items-center justify-center;
+  .mobile-grid-4 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8;
+  }
 
-      {/* Remaining Balance */}
-      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
+  /* Enhanced card styling with better mobile spacing */
+  .mobile-card {
     @apply bg-white border border-gray-100 rounded-xl p-4 sm:p-6 lg:p-8 hover:shadow-lg transition-shadow duration-200;
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-            isBalancePositive ? 'bg-blue-50' : 'bg-orange-50'
-          }`}>
+  }
+
+  /* Enhanced form controls with better touch targets */
+  .mobile-input {
     @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent min-h-[48px] text-sm sm:text-base;
-          </div>
-          <span className={`text-sm px-2 py-1 rounded-full text-xs ${
-            isBalancePositive 
-              ? 'bg-green-50 text-green-700' 
-    @apply grid grid-cols-1 gap-6 sm:gap-8;
-          }`}>
-            {isBalancePositive ? 'Surplus' : 'Deficit'}
-          </span>
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8;
-        <h3 className={`text-2xl font-bold mb-1 ${
-          isBalancePositive ? 'text-black' : 'text-orange-600'
-        }`}>
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8;
-        </h3>
-        <p className="text-sm text-gray-600">Remaining Balance</p>
-      </div>
-    @apply px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10;
-      {/* Community Impact */}
-      <div className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200">
-        <div className="flex items-center justify-between mb-4">
-    @apply text-sm sm:text-base leading-relaxed;
-            <Users className="w-6 h-6 text-purple-600" />
-          </div>
-          <span className="text-sm text-gray-500">Community</span>
-    @apply text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight;
-        <h3 className="text-2xl font-bold text-black mb-1">{donationCount}</h3>
-        <p className="text-sm text-gray-600">Community Contributors</p>
-        <div className="mt-4 flex items-center text-xs text-gray-500">
-    @apply text-lg sm:text-xl lg:text-2xl font-medium leading-snug;
-          Building stronger community bonds
-        </div>
-      </div>
+  }
+
+  .mobile-button {
     @apply min-h-[48px] min-w-[48px] flex items-center justify-center;
+  }
+
+  /* Enhanced button variants with better mobile UX */
+  .mobile-button-primary {
+    @apply px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm sm:text-base font-medium min-h-[48px] flex items-center justify-center;
+  }
+
+  .mobile-button-secondary {
+    @apply px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm sm:text-base font-medium min-h-[48px] flex items-center justify-center;
+  }
+
+  .mobile-button-danger {
+    @apply px-3 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium min-h-[40px] flex items-center justify-center;
+  }
+
+  /* Enhanced spacing utilities */
+  .mobile-container {
+    @apply px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10;
+  }
+
+  .mobile-section {
+    @apply mb-8 sm:mb-12 lg:mb-16;
+  }
+
+  /* Enhanced typography with better mobile readability */
+  .mobile-text-body {
+    @apply text-sm sm:text-base leading-relaxed;
+  }
+
+  .mobile-text-heading {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold leading-tight;
+  }
+
+  .mobile-text-subheading {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium leading-snug;
   }
 
   /* Enhanced mobile spacing */
@@ -124,5 +93,108 @@ export default function FinancialSummary({
 
   .mobile-content-spacing {
     @apply space-y-6 sm:space-y-8 lg:space-y-10;
-  );
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar for better mobile experience */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Enhanced focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2;
+  }
+
+  /* Better touch targets for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Enhanced animations */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Enhanced responsive breakpoints */
+@media (max-width: 640px) {
+  .mobile-only {
+    display: block;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 641px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Better form styling for mobile */
+@media (max-width: 768px) {
+  .mobile-form {
+    @apply space-y-4;
+  }
+  
+  .mobile-form .form-row {
+    @apply grid grid-cols-1 gap-4;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-form .form-row {
+    @apply grid grid-cols-2 gap-6;
+  }
 }
