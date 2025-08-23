@@ -314,7 +314,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </div>
             </div>
         )}
-            )}
           </div>
         )}
       </div>

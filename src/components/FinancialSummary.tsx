@@ -117,7 +117,7 @@ export default function FinancialSummary({
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-medium bg-${balanceColor}-50 text-${balanceColor}-700 border border-${balanceColor}-200`}>
             {isBalancePositive ? 'Surplus' : 'Deficit'}
-          </div>
+          </span>
         </div>
         
         <div className="space-y-4">
