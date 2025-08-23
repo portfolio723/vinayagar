@@ -305,14 +305,15 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   </div>
                 </div>
               </div>
-              </div>
-              
-              <div className="card">
+            
+            <div className="card">
                 <h3 className="card-title mb-4">Festival Description</h3>
                 <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <p className="body-md text-gray-700 leading-relaxed">{festivalSettings.description}</p>
                 </div>
               </div>
+            </div>
+        )}
             )}
           </div>
         )}
