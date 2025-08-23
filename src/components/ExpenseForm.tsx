@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Receipt, Building, Tag } from 'lucide-react';
-import { festivalService } from '../lib/supabase';
+import { festivalService, Expense } from '../lib/supabase';
 
 interface ExpenseFormProps {
   onClose: () => void;

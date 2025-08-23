@@ -253,17 +253,22 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           <div className="content-spacing">
             <div className="flex items-center justify-between">
               <h2 className="heading-lg">Festival Settings</h2>
-              <button
-                onClick={() => setShowSettingsForm(true)}
-                className="btn-primary"
-              >
-                <Edit className="w-5 h-5" />
-                <span>Edit Settings</span>
-              </button>
             </div>
             
             {festivalSettings && (
-              <div className="grid-responsive-2">
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-gray-900">Current Settings</h3>
+                  <button
+                    onClick={() => setShowSettingsForm(true)}
+                    className="btn-primary"
+                  >
+                    <Edit className="w-5 h-5" />
+                    <span>Edit Settings</span>
+                  </button>
+                </div>
+                
+                <div className="grid-responsive-2">
                 <div className="card">
                   <h3 className="card-title mb-4">Festival Information</h3>
                   <div className="element-spacing">
@@ -299,6 +304,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
               
               <div className="card">

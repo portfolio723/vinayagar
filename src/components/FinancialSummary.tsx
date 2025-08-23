@@ -29,11 +29,12 @@ export default function FinancialSummary({
 
   const goalProgress = fundraisingGoal > 0 ? Math.min((totalDonations / fundraisingGoal) * 100, 100) : 0;
   const isBalancePositive = remainingBalance >= 0;
+  const balanceColor = isBalancePositive ? 'blue' : 'orange';
 
   return (
-    <div className="grid-responsive-4 animate-fade-in">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {/* Total Donations Card */}
-      <div className="card border-l-4 border-l-green-500">
+      <div className="bg-white rounded-2xl p-6 border border-gray-200 border-l-4 border-l-green-500 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="card-header">
           <div className="icon-container-md bg-green-50">
             <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" />
@@ -80,7 +81,7 @@ export default function FinancialSummary({
       </div>
 
       {/* Total Expenses Card */}
-      <div className="card border-l-4 border-l-red-500">
+      <div className="bg-white rounded-2xl p-6 border border-gray-200 border-l-4 border-l-red-500 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="card-header">
           <div className="icon-container-md bg-red-50">
             <TrendingDown className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" />
@@ -109,19 +110,19 @@ export default function FinancialSummary({
       </div>
 
       {/* Remaining Balance Card */}
-      <div className={`card border-l-4 ${isBalancePositive ? 'border-l-blue-500' : 'border-l-orange-500'}`}>
+      <div className={`bg-white rounded-2xl p-6 border border-gray-200 border-l-4 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-${balanceColor}-500`}>
         <div className="card-header">
-          <div className={`icon-container-md ${isBalancePositive ? 'bg-blue-50' : 'bg-orange-50'}`}>
-            <Wallet className={`w-6 h-6 sm:w-7 sm:h-7 ${isBalancePositive ? 'text-blue-600' : 'text-orange-600'}`} />
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${balanceColor}-50`}>
+            <Wallet className={`w-6 h-6 text-${balanceColor}-600`} />
           </div>
-          <div className={isBalancePositive ? 'status-positive' : 'status-warning'}>
+          <span className={`px-3 py-1 rounded-full text-xs font-medium bg-${balanceColor}-50 text-${balanceColor}-700 border border-${balanceColor}-200`}>
             {isBalancePositive ? 'Surplus' : 'Deficit'}
           </div>
         </div>
         
         <div className="space-y-4">
           <div>
-            <h3 className={`heading-lg mb-2 ${isBalancePositive ? 'text-blue-600' : 'text-orange-600'}`}>
+            <h3 className={`text-2xl font-bold mb-2 text-${balanceColor}-600`}>
               {formatCurrency(Math.abs(remainingBalance))}
             </h3>
             <p className="body-md text-gray-600">
@@ -130,16 +131,12 @@ export default function FinancialSummary({
           </div>
           
           {/* Balance Status */}
-          <div className={`p-3 rounded-lg border ${
-            isBalancePositive 
-              ? 'bg-blue-50 border-blue-100' 
-              : 'bg-orange-50 border-orange-100'
-          }`}>
+          <div className={`p-3 rounded-lg border bg-${balanceColor}-50 border-${balanceColor}-100`}>
             <div className="flex items-center justify-between">
-              <span className={`body-sm ${isBalancePositive ? 'text-blue-700' : 'text-orange-700'}`}>
+              <span className={`text-sm text-${balanceColor}-700`}>
                 Financial Status
               </span>
-              <span className={`body-sm font-semibold ${isBalancePositive ? 'text-blue-700' : 'text-orange-700'}`}>
+              <span className={`text-sm font-semibold text-${balanceColor}-700`}>
                 {isBalancePositive ? 'Healthy' : 'Attention Needed'}
               </span>
             </div>
@@ -148,7 +145,7 @@ export default function FinancialSummary({
       </div>
 
       {/* Community Impact Card */}
-      <div className="card border-l-4 border-l-purple-500">
+      <div className="bg-white rounded-2xl p-6 border border-gray-200 border-l-4 border-l-purple-500 shadow-sm hover:shadow-md transition-shadow duration-300">
         <div className="card-header">
           <div className="icon-container-md bg-purple-50">
             <Users className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" />
