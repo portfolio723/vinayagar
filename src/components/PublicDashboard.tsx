@@ -62,9 +62,53 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
     });
   };
 
+  if (activeView === 'donations') {
+    return (
+      <Layout onAdminClick={onAdminClick}>
+        <div className="mb-8">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className="btn-secondary mb-6"
+          >
+            ← Back to Dashboard
+          </button>
+          <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">All Donations</h2>
+          <p className="text-gray-600">Complete list of community contributions</p>
+        </div>
+        <DonationsList 
+          donations={donations} 
+          showAllDetails={true}
+          showFilters={true}
+        />
+      </Layout>
+    );
+  }
+
+  if (activeView === 'expenses') {
+    return (
+      <Layout onAdminClick={onAdminClick}>
+        <div className="mb-8">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className="btn-secondary mb-6"
+          >
+            ← Back to Dashboard
+          </button>
+          <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">All Expenses</h2>
+          <p className="text-gray-600">Complete breakdown of festival expenditures</p>
+        </div>
+        <ExpensesList 
+          expenses={expenses} 
+          showAllDetails={true}
+          showFilters={true}
+        />
+      </Layout>
+    );
+  }
+
   if (isLoading) {
     return (
-      <Layout>
+      <Layout onAdminClick={onAdminClick}>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center space-y-4">
             <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin mx-auto"></div>
@@ -76,7 +120,7 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
   }
 
   return (
-    <Layout>
+    <Layout onAdminClick={onAdminClick}>
       {/* Financial Summary */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-8">
@@ -153,17 +197,5 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
           </div>
         </div>
       </div>
-
-      {/* Admin Access */}
-      <div className="fixed bottom-6 right-6">
-        <button
-          onClick={onAdminClick}
-          className="bg-gray-900 text-white p-4 rounded-full shadow-lg hover:bg-gray-800 transition-colors duration-200 group"
-          title="Admin Access"
-        >
-          <Shield className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
-        </button>
-      </div>
-    </Layout>
   );
 }

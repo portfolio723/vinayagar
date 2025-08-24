@@ -1,12 +1,13 @@
 import React from 'react';
-import { Heart, Calendar } from 'lucide-react';
+import { Heart, Calendar, MapPin, Shield } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
   showHeader?: boolean;
+  onAdminClick?: () => void;
 }
 
-export default function Layout({ children, showHeader = true }: LayoutProps) {
+export default function Layout({ children, showHeader = true, onAdminClick }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {showHeader && (
@@ -18,18 +19,21 @@ export default function Layout({ children, showHeader = true }: LayoutProps) {
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="heading-md">Vinayaka Chavithi 2025</h1>
+                  <h1 className="heading-md">Ganapathi Yuva Mandali</h1>
                   <p className="body-sm text-gray-600 flex items-center mt-1">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Community Festival Dashboard
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Rajanagaram
                   </p>
                 </div>
               </div>
               <div className="hidden md:flex items-center space-x-6">
-                <div className="text-right">
-                  <p className="body-sm text-gray-600">Bringing Community Together</p>
-                  <p className="body-sm font-medium text-gray-900">Through Devotion & Celebration</p>
-                </div>
+                <button
+                  onClick={onAdminClick}
+                  className="btn-primary"
+                >
+                  <Shield className="w-5 h-5" />
+                  <span>Admin Access</span>
+                </button>
               </div>
             </div>
           </div>
@@ -59,6 +63,10 @@ export default function Layout({ children, showHeader = true }: LayoutProps) {
               <span>Community Driven</span>
               <span className="hidden sm:inline">•</span>
               <span>Real-time Updates</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="flex items-center gap-1">
+                Dev by <Heart className="w-3 h-3 text-red-500" /> Sandeep M
+              </span>
             </div>
           </div>
         </div>

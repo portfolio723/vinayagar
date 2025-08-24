@@ -5,6 +5,9 @@ import { Expense } from '../lib/supabase';
 interface ExpensesListProps {
   expenses: Expense[];
   showAllDetails?: boolean;
+  showViewAll?: boolean;
+  showFilters?: boolean;
+  onViewAll?: () => void;
   onEdit?: (expense: Expense) => void;
   onDelete?: (id: string) => void;
   isAdmin?: boolean;
@@ -13,10 +16,15 @@ interface ExpensesListProps {
 export default function ExpensesList({ 
   expenses, 
   showAllDetails = false, 
+  showViewAll = false,
+  showFilters = false,
+  onViewAll,
   onEdit, 
   onDelete, 
   isAdmin = false 
 }: ExpensesListProps) {
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'date' | 'amount'>('date');
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -57,6 +65,16 @@ export default function ExpensesList({
   };
 
   const displayExpenses = showAllDetails ? expenses : expenses.slice(0, 5);
+  const filteredExpenses = showAllDetails 
+    ? expenses
+        .filter(e => categoryFilter === 'all' || e.category === categoryFilter)
+        .sort((a, b) => {
+          if (sortBy === 'amount') {
+            return Number(b.amount) - Number(a.amount);
+          }
+          return new Date(b.expense_date).getTime() - new Date(a.expense_date).getTime();
+        })
+    : expenses.slice(0, 5);
   const totalAmount = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
   const averageAmount = expenses.length > 0 ? totalAmount / expenses.length : 0;
 
@@ -79,8 +97,18 @@ export default function ExpensesList({
           </div>
         </div>
         {!showAllDetails && expenses.length > 5 && (
-          <div className="status-negative">
-            Showing {displayExpenses.length} of {expenses.length}
+          <div className="flex items-center gap-3">
+            <div className="status-negative">
+              Showing {filteredExpenses.length} of {expenses.length}
+            </div>
+            {showViewAll && onViewAll && (
+              <button
+                onClick={onViewAll}
+                className="btn-outline text-sm"
+              >
+                View All
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -99,7 +127,7 @@ export default function ExpensesList({
         <div className="element-spacing">
           {/* Expenses List */}
           <div className="space-y-4">
-            {displayExpenses.map((expense) => (
+            {filteredExpenses.map((expense) => (
               <div key={expense.id} className="list-item">
                 <div className="list-item-content">
                   <div className="icon-container-sm bg-red-50">
