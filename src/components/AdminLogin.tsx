@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Heart } from 'lucide-react';
 import { authService } from '../lib/supabase';
 
 interface AdminLoginProps {
