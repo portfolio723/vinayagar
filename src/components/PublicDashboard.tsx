@@ -166,3 +166,4 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
       </div>
     </Layout>
   );
+}
