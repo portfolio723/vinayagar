@@ -77,7 +77,6 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
 
   return (
     <Layout>
-    <Layout onAdminClick={onAdminClick}>
       {/* Financial Summary */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-8">
@@ -167,6 +166,3 @@ export default function PublicDashboard({ onAdminClick }: PublicDashboardProps) 
       </div>
     </Layout>
   );
-}
-  )
-}
