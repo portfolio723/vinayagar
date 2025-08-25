@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Receipt, Calendar, Tag, Building, Edit2, Trash2 } from 'lucide-react';
 import { Expense } from '../lib/supabase';
 
